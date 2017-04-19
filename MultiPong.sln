@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.0.0
+MinimumVisualStudioVersion = 10.0.0.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiPongCommon", "MultiPongCommon/MultiPongCommon.csproj", "{D8361F6B-376A-4508-B1E0-432CBFBA5B69}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiPongClient", "MultiPongClient\MultiPongClient.csproj", "{026CB682-AE23-4810-B755-11D245702B9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiPongServer", "MultiPongServer\MultiPongServer.csproj", "{AA1D4C00-8E24-42AD-87CF-AB11A4B87E08}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D8361F6B-376A-4508-B1E0-432CBFBA5B69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8361F6B-376A-4508-B1E0-432CBFBA5B69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8361F6B-376A-4508-B1E0-432CBFBA5B69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8361F6B-376A-4508-B1E0-432CBFBA5B69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{026CB682-AE23-4810-B755-11D245702B9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{026CB682-AE23-4810-B755-11D245702B9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{026CB682-AE23-4810-B755-11D245702B9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{026CB682-AE23-4810-B755-11D245702B9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA1D4C00-8E24-42AD-87CF-AB11A4B87E08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA1D4C00-8E24-42AD-87CF-AB11A4B87E08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA1D4C00-8E24-42AD-87CF-AB11A4B87E08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA1D4C00-8E24-42AD-87CF-AB11A4B87E08}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
