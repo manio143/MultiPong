@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace MultiPongCommon
 {
@@ -11,5 +12,7 @@ namespace MultiPongCommon
         //TODO: Perform serialization
         //  public virtual byte[] GetBytes()
         //  public virtual Message FromBytes(byte[] bytes)
+
+        public Stream SendeStream { get; set; }
     }
 }

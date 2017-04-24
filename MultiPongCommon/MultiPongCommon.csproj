@@ -51,6 +51,7 @@
     <Compile Include="GetStateMessage.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageType.cs" />
+    <Compile Include="INetworkClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegisterConfirmation.cs" />
     <Compile Include="RegisterMessage.cs" />

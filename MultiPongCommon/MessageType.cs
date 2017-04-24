@@ -1,6 +1,6 @@
 ﻿namespace MultiPongCommon
 {
-    public enum MessageType
+    public enum MessageType : byte
     {
         Register = 1,
         RegisterConfirmation,
