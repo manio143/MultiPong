@@ -13,6 +13,6 @@ namespace MultiPongCommon
         //  public virtual byte[] GetBytes()
         //  public virtual Message FromBytes(byte[] bytes)
 
-        public Stream SendeStream { get; set; }
+        public Stream SenderStream { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace MultiPongServer
             // networkClient = new NetworkClient();
             // netorkClient.ListenAsync();
 
-            program.Loop();    
+            program.Loop();
 
             Console.WriteLine("Press any key to exit");
             Console.ReadKey(false);
