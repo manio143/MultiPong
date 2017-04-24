@@ -23,7 +23,7 @@ namespace MultiPongCommon
         public Message Receive()
         {
             queueSemaphore.Close();
-            lock(messageQueue)
+            lock (messageQueue)
                 return messageQueue.Dequeue();
         }
 
@@ -60,9 +60,7 @@ namespace MultiPongCommon
             thread.Start(client);
 
             lock (communicationThreads)
-            {
                 communicationThreads.Add(thread);
-            }
 
             listener.BeginAcceptTcpClient(AcceptClient, null);
         }
@@ -80,9 +78,7 @@ namespace MultiPongCommon
             thread.Start(client);
 
             lock (communicationThreads)
-            {
                 communicationThreads.Add(thread);
-            }
         }
 
         private void ReceiveAsync(object oclient)
@@ -95,8 +91,12 @@ namespace MultiPongCommon
                 var bytes = new byte[bytesToRead];
                 while (bytesToRead > 0)
                     bytesToRead -= stream.Read(bytes, bytes.Length - bytesToRead, bytesToRead);
-                lock(messageQueue)
-                    messageQueue.Enqueue(Message.FromBytes(bytes));
+                lock (messageQueue)
+                {
+                    var message = Message.FromBytes(bytes);
+                    message.SenderStream = stream;
+                    messageQueue.Enqueue(message);
+                }
                 queueSemaphore.Release();
             }
         }
