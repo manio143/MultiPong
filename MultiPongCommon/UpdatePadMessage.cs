@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace MultiPongCommon
 {
@@ -14,6 +15,13 @@ namespace MultiPongCommon
             MessageType = MessageType.UpdatePad;
         }
 
-        //TODO: override virtual methods
+        public override byte[] GetBytes()
+        {
+            List<byte> result = new List<byte>();
+            byte[] baseBytes = base.GetBytes();
+            result.AddRange(baseBytes);
+            result.AddRange(PadPosition.GetBytes());
+            return result.ToArray();
+        }
     }
 }
