@@ -21,12 +21,11 @@ namespace MultiPongCommon
         public override byte[] GetBytes()
         {
             List<byte> result = new List<byte>();
-            byte[] b1 = base.GetBytes();
-            result.AddRange(b1);
+            byte[] baseBytes = base.GetBytes();
+            result.AddRange(baseBytes);
             result.AddRange(BallPosition.GetBytes());
             result.AddRange(Player1Position.GetBytes());
             result.AddRange(Player2Position.GetBytes());
-            result[0] = (byte)result.Count;
             return result.ToArray();
         }
     }

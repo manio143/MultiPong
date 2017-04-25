@@ -7,10 +7,5 @@
             PlayerId = playerId;
             MessageType = MessageType.RegisterConfirmation;
         }
-
-        public override byte[] GetBytes()
-        {
-            return base.GetBytes();
-        }
     }
 }

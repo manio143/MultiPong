@@ -12,13 +12,13 @@ namespace MultiPongCommon
 
         public virtual byte[] GetBytes()
         {
-            return new byte[] { 2, (byte)MessageType, (byte)PlayerId };
+            return new byte[] { (byte)MessageType, (byte)PlayerId };
         }
 
-        protected static Vector2 ReadVector2(BinaryReader br)
+        protected static Vector2 ReadVector2(BinaryReader binReader)
         {
-            float x = br.ReadSingle();
-            float y = br.ReadSingle();
+            float x = binReader.ReadSingle();
+            float y = binReader.ReadSingle();
             return new Vector2(x, y);
         }
 
@@ -26,33 +26,32 @@ namespace MultiPongCommon
         {
             if (bytes.Length <= 0) throw new Exception("FromBytes: invalid array");
 
-            using (var ms = new MemoryStream(bytes))
+            using (var memStream = new MemoryStream(bytes))
             {
-                using (var br = new BinaryReader(ms))
+                using (var binReader = new BinaryReader(memStream))
                 {
-                    br.ReadByte(); // count
-                    MessageType ty = (MessageType)br.ReadByte();
-                    int pl = br.ReadByte();
-                    switch (ty)
+                    MessageType messageType = (MessageType)binReader.ReadByte();
+                    int playerId = binReader.ReadByte();
+                    switch (messageType)
                     {
                         case MessageType.Register:
-                            return new RegisterMessage() { PlayerId = pl };
+                            return new RegisterMessage() { PlayerId = playerId };
 
                         case MessageType.RegisterConfirmation:
-                            return new RegisterConfirmation(pl);
+                            return new RegisterConfirmation(playerId);
 
                         case MessageType.GetState:
-                            return new GetStateMessage() { PlayerId = pl };
+                            return new GetStateMessage() { PlayerId = playerId };
 
                         case MessageType.State:
-                            var ball = ReadVector2(br);
-                            var p1 = ReadVector2(br);
-                            var p2 = ReadVector2(br);
-                            return new StateMessage(ball, p1, p2);
+                            var ballPosition = ReadVector2(binReader);
+                            var player1Position = ReadVector2(binReader);
+                            var player2Position = ReadVector2(binReader);
+                            return new StateMessage(ballPosition, player1Position, player2Position);
 
                         case MessageType.UpdatePad:
-                            var p = ReadVector2(br);
-                            return new UpdatePadMessage(p, pl);
+                            var padPosition = ReadVector2(binReader);
+                            return new UpdatePadMessage(padPosition, playerId);
                     }
                 }
             }

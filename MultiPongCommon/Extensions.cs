@@ -9,15 +9,15 @@ namespace MultiPongCommon
         {
             byte[] buffer;
 
-            using (var ms = new MemoryStream())
+            using (var memStream = new MemoryStream())
             {
-                using (var bw = new BinaryWriter(ms))
+                using (var binWriter = new BinaryWriter(memStream))
                 {
-                    bw.Write(vec.X);
-                    bw.Write(vec.Y);
+                    binWriter.Write(vec.X);
+                    binWriter.Write(vec.Y);
                 }
 
-                buffer = ms.ToArray();
+                buffer = memStream.ToArray();
             }
 
             return buffer;
