@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace MultiPongCommon
 {
@@ -17,6 +18,16 @@ namespace MultiPongCommon
             MessageType = MessageType.State;
         }
 
-        //TODO: override virtual methods
+        public override byte[] GetBytes()
+        {
+            List<byte> result = new List<byte>();
+            byte[] b1 = base.GetBytes();
+            result.AddRange(b1);
+            result.AddRange(BallPosition.GetBytes());
+            result.AddRange(Player1Position.GetBytes());
+            result.AddRange(Player2Position.GetBytes());
+            result[0] = (byte)result.Count;
+            return result.ToArray();
+        }
     }
 }
