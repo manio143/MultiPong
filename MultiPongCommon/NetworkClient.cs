@@ -33,12 +33,12 @@ namespace MultiPongCommon
             if (singleClient)
             {
                 var stream = clients.First().GetStream();
-                stream.WriteByte(bytes.Length);
+                stream.WriteByte((byte)bytes.Length);
                 stream.Write(bytes, 0, bytes.Length);
             }
             else
             {
-                message.SenderStream.WriteByte(bytes.Length);
+                message.SenderStream.WriteByte((byte)bytes.Length);
                 message.SenderStream.Write(bytes, 0, bytes.Length);
             }
         }
