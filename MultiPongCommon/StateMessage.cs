@@ -9,6 +9,8 @@ namespace MultiPongCommon
         public Vector2 Player1Position { get; set; }
         public Vector2 Player2Position { get; set; }
 
+        //TODO: Player points
+
         public StateMessage(Vector2 ballPosition, Vector2 player1Position, Vector2 player2Position)
         {
             BallPosition = ballPosition;

@@ -8,17 +8,17 @@ namespace MultiPongCommon
     {
         public MessageType MessageType { get; set; }
 
-        public int PlayerId { get; set; } = 0;
+        public byte PlayerId { get; set; } = 0;
 
         public virtual byte[] GetBytes()
         {
-            return new byte[] { (byte)MessageType, (byte)PlayerId };
+            return new byte[] { (byte)MessageType, PlayerId };
         }
 
         protected static Vector2 ReadVector2(BinaryReader binReader)
         {
-            float x = binReader.ReadSingle();
-            float y = binReader.ReadSingle();
+            var x = binReader.ReadSingle();
+            var y = binReader.ReadSingle();
             return new Vector2(x, y);
         }
 
@@ -30,8 +30,8 @@ namespace MultiPongCommon
             {
                 using (var binReader = new BinaryReader(memStream))
                 {
-                    MessageType messageType = (MessageType)binReader.ReadByte();
-                    int playerId = binReader.ReadByte();
+                    var messageType = (MessageType)binReader.ReadByte();
+                    var playerId = binReader.ReadByte();
                     switch (messageType)
                     {
                         case MessageType.Register:
@@ -52,6 +52,8 @@ namespace MultiPongCommon
                         case MessageType.UpdatePad:
                             var padPosition = ReadVector2(binReader);
                             return new UpdatePadMessage(padPosition, playerId);
+
+                         //TODO: Add all cases
                     }
                 }
             }

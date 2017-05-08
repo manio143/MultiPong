@@ -39,7 +39,11 @@ namespace MultiPongClient
             var message = networkClient.Receive();
             if(message is RegisterRejection)
                 throw new ApplicationException("The server is busy");
-            if (message is RegisterConfirmation) ;
+            if (message is RegisterConfirmation)
+            {
+                //TODO: make id a field and use it for pad update
+                var myId = (message as RegisterConfirmation).PlayerId;
+            }
             else throw new ApplicationException("Unexpected message received");
         }
 
