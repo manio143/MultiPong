@@ -4,8 +4,10 @@
     {
         Register = 1,
         RegisterConfirmation,
+        RegesterRejection,
         GetState,
         State,
-        UpdatePad
+        UpdatePad,
+        EndGame
     }
 }
