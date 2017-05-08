@@ -5,7 +5,7 @@ namespace MultiPongClient
 {
     public class Pad
     {
-        Vector2 position;
+        public Vector2 position;
 
         public Texture2D rectangle;
 
@@ -19,10 +19,20 @@ namespace MultiPongClient
             }
         }
 
+        public void move(Vector2 x)
+        {
+            position += x;
+        }
+
         public Pad(Texture2D rectangle, Vector2 initialPosition)
         {
             position = initialPosition;
             this.rectangle = rectangle;
+        }
+
+        public Pad(Vector2 initialPosition)
+        {
+            position = initialPosition;
         }
 
         public void Draw(SpriteBatch spriteBatch)
