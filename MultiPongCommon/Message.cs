@@ -60,5 +60,10 @@ namespace MultiPongCommon
         }
 
         public Stream SenderStream { get; set; }
+
+        public override string ToString()
+        {
+            return $"Type: {MessageType}, PlayerId: {PlayerId}";
+        }
     }
 }

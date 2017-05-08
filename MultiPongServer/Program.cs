@@ -13,14 +13,16 @@ namespace MultiPongServer
 
             var program = new Program();
 
-            //TODO: Server logic
-            // networkClient = new NetworkClient();
-            // netorkClient.ListenAsync();
-
             program.Loop();
 
             Console.WriteLine("Press any key to exit");
             Console.ReadKey(false);
+        }
+
+        public Program()
+        {
+            networkClient = new NetworkClient();
+            networkClient.ListenAsync();
         }
 
         private INetworkClient networkClient;

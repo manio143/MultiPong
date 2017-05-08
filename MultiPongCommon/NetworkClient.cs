@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Diagnostics;
 
 namespace MultiPongCommon
 {
@@ -22,7 +23,7 @@ namespace MultiPongCommon
 
         public Message Receive()
         {
-            queueSemaphore.Close();
+            queueSemaphore.WaitOne();
             lock (messageQueue)
                 return messageQueue.Dequeue();
         }
@@ -47,6 +48,7 @@ namespace MultiPongCommon
         public void ListenAsync()
         {
             listener = new TcpListener(IPAddress.Any, 7575);
+            listener.Start();
             listener.BeginAcceptTcpClient(AcceptClient, null);
         }
 
@@ -55,6 +57,8 @@ namespace MultiPongCommon
             var client = listener.EndAcceptTcpClient(ar);
             lock (clients)
                 clients.Add(client);
+
+            Debug.WriteLine("New client accepted.");
 
             var thread = new Thread(ReceiveAsync);
             thread.Start(client);
@@ -96,6 +100,7 @@ namespace MultiPongCommon
                     var message = Message.FromBytes(bytes);
                     message.SenderStream = stream;
                     messageQueue.Enqueue(message);
+                    Debug.WriteLine("Message received ({{{0}}}", message);
                 }
                 queueSemaphore.Release();
             }
