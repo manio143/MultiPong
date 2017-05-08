@@ -9,16 +9,6 @@ namespace MultiPongClient
 
         public Texture2D rectangle;
 
-        public Rectangle Bounds
-        {
-            get
-            {
-                var rect = rectangle.Bounds;
-                rect.Offset(position);
-                return rect;
-            }
-        }
-
         public void move(Vector2 x)
         {
             position += x;

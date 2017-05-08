@@ -1,6 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Net;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MultiPongCommon;
 
 namespace MultiPongClient
 {
@@ -13,9 +16,13 @@ namespace MultiPongClient
 
         Pad player1, player2;
 
+        private INetworkClient networkClient = new NetworkClient();
+
         public PongGame()
         {
             gdm = new GraphicsDeviceManager(this);
+            networkClient.Connect(new IPEndPoint(IPAddress.Loopback, 7575));
+            //TODO: add paramter to program for server address
         }
 
         protected override void Initialize()
@@ -27,6 +34,13 @@ namespace MultiPongClient
 
             player1 = new Pad(createRectangle(20, 180), new Vector2(10, 100));
             player2 = new Pad(createRectangle(20, 180), new Vector2(gdm.GraphicsDevice.Viewport.Width - 30, 100));
+
+            networkClient.Send(new RegisterMessage());
+            var message = networkClient.Receive();
+            if(message is RegisterRejection)
+                throw new ApplicationException("The server is busy");
+            if (message is RegisterConfirmation) ;
+            else throw new ApplicationException("Unexpected message received");
         }
 
         protected override void Draw(GameTime gameTime)
@@ -41,16 +55,27 @@ namespace MultiPongClient
 
         protected override void Update(GameTime gameTime)
         {
+            networkClient.Send(new GetStateMessage());
+            var message = networkClient.Receive();
+            var stateMessage = message as StateMessage;
+            if (stateMessage != null)
+            {
+                //TODO: process received message
+            }
+            else if (message is EndGame)
+            {
+                //TODO: Display winner
+                //Handle exit
+            }
+            else throw new ApplicationException("Unexpected message received");
+
             base.Update(gameTime);
             ball.Update(gameTime);
-
-            if (ball.Bounds.Intersects(player1.Bounds)
-                || ball.Bounds.Intersects(player2.Bounds))
-                ball.Bounce(new Vector2(-1, 1));
 
             var mouseState = Mouse.GetState();
             //TODO: calculate difference in mouseState Y
             //var diff
+            //TODO: networkClient.Send(new UpdatePadMessage(...);
         }
 
         public Texture2D createRectangle(int width, int height)
