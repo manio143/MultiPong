@@ -51,7 +51,7 @@ namespace MultiPongServer
 
         private void Handle(Message message)
         {
-            throw new NotImplementedException();
+            //TODO: switch(message.MessageType)
         }
     }
 }

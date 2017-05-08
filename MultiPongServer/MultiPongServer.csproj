@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="BallServer.cs" />
     <Compile Include="GameState.cs" />
+    <Compile Include="Pad.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -59,10 +60,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MultiPongClient\MultiPongClient.csproj">
-      <Project>{026CB682-AE23-4810-B755-11D245702B9D}</Project>
-      <Name>MultiPongClient</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MultiPongCommon\MultiPongCommon.csproj">
       <Project>{D8361F6B-376A-4508-B1E0-432CBFBA5B69}</Project>
       <Name>MultiPongCommon</Name>

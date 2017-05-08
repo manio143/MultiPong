@@ -1,6 +1,6 @@
 ﻿using System;
+using System.IO;
 using Microsoft.Xna.Framework;
-using MultiPongClient;
 
 namespace MultiPongServer
 {
@@ -26,6 +26,17 @@ namespace MultiPongServer
         {
             this.Player1.move(player1);
             this.Player2.move(player2);
+        }
+
+        public bool CanAddNewPlayer()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int RegisterPlayer(Stream playerStream)
+        {
+            throw new NotImplementedException();
+            //TODO: return id of new player
         }
     }
 }

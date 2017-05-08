@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MultiPongServer;
 
-namespace MultiPongClient
+namespace MultiPongServer
 {
     public class BallServer
     {
