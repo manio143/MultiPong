@@ -7,8 +7,8 @@ namespace MultiPongServer
 {
     public class BallServer
     {
-        Vector2 position;
-        Vector2 velocity;
+        public Vector2 position;
+        public Vector2 velocity;
         const float acceleration = 30f;
 
         public const int RADIUS = 50;

@@ -7,8 +7,10 @@ namespace MultiPongServer
 {
     public class GameState
     {
-        BallServer DummyBall;
+        public BallServer DummyBall;
         public Pad Player1, Player2;
+
+        public byte Players { get; set; } = 0;
 
         public GameState(Vector2 BallPosition, Vector2 Player1Position, Vector2 Player2Position, Vector2 InitVelocity,
             int ScreenHeight)
