@@ -4,7 +4,7 @@
     {
         Register = 1,
         RegisterConfirmation,
-        RegesterRejection,
+        RegisterRejection,
         GetState,
         State,
         UpdatePad,

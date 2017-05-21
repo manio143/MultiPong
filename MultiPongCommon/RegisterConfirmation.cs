@@ -2,7 +2,7 @@
 {
     public class RegisterConfirmation : Message
     {
-        public RegisterConfirmation(int playerId)
+        public RegisterConfirmation(byte playerId)
         {
             PlayerId = playerId;
             MessageType = MessageType.RegisterConfirmation;

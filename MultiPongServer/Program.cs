@@ -29,8 +29,13 @@ namespace MultiPongServer
 
         private Stopwatch stopwatch;
 
-        private GameState gameState;
-
+        private GameState gameState = new GameState(
+            Constants.BALL_INITIAL_POSITION,
+            Constants.PLAYER1_INITIAL_POSITION,
+            Constants.PLAYER2_INITIAL_POSITION,
+            Constants.INITIAL_VELOCITY,
+            Constants.SCREEN_HEIGHT);
+        
         public void Loop()
         {
             TimeSpan previous, current;
