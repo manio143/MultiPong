@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace MultiPongCommon
         public virtual void Send(Message message)
         {
             var bytes = message.GetBytes();
-            message.SenderStream.WriteByte((byte)bytes.Length);
+            message.SenderStream.WriteByte((byte) bytes.Length);
             message.SenderStream.Write(bytes, 0, bytes.Length);
         }
 
@@ -42,18 +43,33 @@ namespace MultiPongCommon
             var stream = client.GetStream();
             while (client.Connected)
             {
-                var bytesToRead = stream.ReadByte();
-                var bytes = new byte[bytesToRead];
-                while (bytesToRead > 0)
-                    bytesToRead -= stream.Read(bytes, bytes.Length - bytesToRead, bytesToRead);
-                lock (messageQueue)
+                try
                 {
-                    var message = Message.FromBytes(bytes);
-                    message.SenderStream = stream;
-                    messageQueue.Enqueue(message);
-                    Debug.WriteLine("Message received ({{{0}}}", message);
+                    var bytesToRead = stream.ReadByte();
+                    if (bytesToRead < 0)
+                        break;
+                    var bytes = new byte[bytesToRead];
+                    while (bytesToRead > 0)
+                        bytesToRead -= stream.Read(bytes, bytes.Length - bytesToRead, bytesToRead);
+                    lock (messageQueue)
+                    {
+                        var message = Message.FromBytes(bytes);
+                        message.SenderStream = stream;
+                        messageQueue.Enqueue(message);
+                        Debug.WriteLine("Message received ({{{0}}}", message);
+                    }
+                    queueSemaphore.Release();
                 }
-                queueSemaphore.Release();
+                catch (IOException ioex)
+                {
+                    client.Close();
+                    break;
+                }
+                catch (SocketException sex)
+                {
+                    client.Close();
+                    break;
+                }
             }
         }
     }
