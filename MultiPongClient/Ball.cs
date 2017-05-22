@@ -12,7 +12,7 @@ namespace MultiPongClient
 
         int height;
 
-        public Texture2D circle;
+        Texture2D circle;
 
         public Ball(Texture2D circle, Vector2 initialPosition, Vector2 initVelocity, int screenHeight)
         {

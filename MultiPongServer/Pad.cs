@@ -5,19 +5,19 @@ namespace MultiPongServer
 {
     public class Pad
     {
-        public Vector2 position;
+        public Vector2 Position { get; private set; }
 
-        public Rectangle rectangle;
+        public Rectangle Rectangle { get; private set; }
 
-        public void move(Vector2 x)
+        public void Move(Vector2 x)
         {
-            position += x;
+            Position += x;
         }
 
         public Pad(Rectangle rectangle, Vector2 initialPosition)
         {
-            position = initialPosition;
-            this.rectangle = rectangle;
+            Position = initialPosition;
+            Rectangle = rectangle;
         }
     }
 }

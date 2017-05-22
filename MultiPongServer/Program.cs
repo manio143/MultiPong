@@ -73,16 +73,17 @@ namespace MultiPongServer
                         messageToSend.SenderStream = message.SenderStream;
                         networkClient.Send(messageToSend);
                     }
-                    return;
+                    break;
 
                 case MessageType.GetState:
-                    messageToSend = new StateMessage(gameState.DummyBall.position, gameState.Player1.position, gameState.Player2.position);
+                    messageToSend = new StateMessage(gameState.DummyBall.Position, gameState.Player1.Position, gameState.Player2.Position);
                     messageToSend.SenderStream = message.SenderStream;
                     networkClient.Send(messageToSend);
-                    return;
-            }
+                    break;
 
-            throw new Exception("Handle: invalid message type");
+                default:
+                    throw new Exception("Handle: invalid message type");
+            }         
         }
     }
 }
