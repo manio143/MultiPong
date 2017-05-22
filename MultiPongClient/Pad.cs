@@ -9,9 +9,9 @@ namespace MultiPongClient
 
         public Texture2D Rectangle { get; private set; }
 
-        public void move(Vector2 x)
+        public void Move(Vector2 x)
         {
-            Position += x;
+            Position = x;
         }
 
         public Pad(Texture2D rectangle, Vector2 initialPosition)

@@ -33,7 +33,7 @@ namespace MultiPongServer
 
         public bool CanAddNewPlayer()
         {
-            return Players >= 2;
+            return Players < 2;
         }
     }
 }

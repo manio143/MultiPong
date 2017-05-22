@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,6 +18,7 @@ namespace MultiPongClient
         Pad player1, player2;
 
         private NetworkClientForClient networkClient = new NetworkClientForClient();
+        private byte myId;
 
         public PongGame()
         {
@@ -44,7 +46,7 @@ namespace MultiPongClient
             if (message is RegisterConfirmation)
             {
                 //TODO: make id a field and use it for pad update
-                var myId = (message as RegisterConfirmation).PlayerId;
+                myId = (message as RegisterConfirmation).PlayerId;
             }
             else throw new ApplicationException("Unexpected message received");
         }
@@ -61,12 +63,15 @@ namespace MultiPongClient
 
         protected override void Update(GameTime gameTime)
         {
-            networkClient.Send(new GetStateMessage());
+            networkClient.Send(new GetStateMessage(){PlayerId = myId});
             var message = networkClient.Receive();
             var stateMessage = message as StateMessage;
             if (stateMessage != null)
             {
-                //TODO: process received message
+                ball.Move(stateMessage.BallPosition);
+                Debug.WriteLine($"New ball position: {stateMessage.BallPosition.X}, {stateMessage.BallPosition.Y}");
+                player1.Move(stateMessage.Player1Position);
+                player2.Move(stateMessage.Player2Position);
             }
             else if (message is EndGame)
             {
