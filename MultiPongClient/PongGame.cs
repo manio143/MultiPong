@@ -67,7 +67,8 @@ namespace MultiPongClient
                 //TODO: process received message
             }
             else if (message is EndGame)
-            {   
+            {
+                var winner = (message as EndGame).Winner;
                 //TODO: Display winner
                 //Handle exit
             }

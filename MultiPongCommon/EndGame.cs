@@ -2,9 +2,12 @@
 {
     public class EndGame : Message
     {
-        public EndGame()
+        public EndGame(byte winner)
         {
             MessageType = MessageType.EndGame;
+            Winner = winner;
         }
+
+        public byte Winner { get; }
     }
 }
