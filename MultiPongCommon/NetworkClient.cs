@@ -11,15 +11,11 @@ namespace MultiPongCommon
 {
     public class NetworkClient : INetworkClient
     {
-        private bool singleClient;
-        private List<TcpClient> clients = new List<TcpClient>();
         private TcpListener listener;
 
         private Semaphore queueSemaphore = new Semaphore(0, int.MaxValue);
 
         private Queue<Message> messageQueue = new Queue<Message>();
-
-        private List<Thread> communicationThreads = new List<Thread>();
 
         public Message Receive()
         {
@@ -31,17 +27,8 @@ namespace MultiPongCommon
         public void Send(Message message)
         {
             var bytes = message.GetBytes();
-            if (singleClient)
-            {
-                var stream = clients.First().GetStream();
-                stream.WriteByte((byte)bytes.Length);
-                stream.Write(bytes, 0, bytes.Length);
-            }
-            else
-            {
-                message.SenderStream.WriteByte((byte)bytes.Length);
-                message.SenderStream.Write(bytes, 0, bytes.Length);
-            }
+            message.SenderStream.WriteByte((byte)bytes.Length);
+            message.SenderStream.Write(bytes, 0, bytes.Length);
         }
 
 
@@ -55,34 +42,27 @@ namespace MultiPongCommon
         private void AcceptClient(IAsyncResult ar)
         {
             var client = listener.EndAcceptTcpClient(ar);
-            lock (clients)
-                clients.Add(client);
 
             Debug.WriteLine("New client accepted.");
 
-            var thread = new Thread(ReceiveAsync);
-            thread.Start(client);
-
-            lock (communicationThreads)
-                communicationThreads.Add(thread);
+            StartReceiveAsyncInNewThread(client);
 
             listener.BeginAcceptTcpClient(AcceptClient, null);
         }
 
         public void Connect(IPEndPoint endPoint)
         {
-            singleClient = true;
-
             var client = new TcpClient();
             client.Connect(endPoint);
 
-            clients.Add(client);
+            StartReceiveAsyncInNewThread(client);
+        }
 
+        private void StartReceiveAsyncInNewThread(TcpClient client)
+        {
             var thread = new Thread(ReceiveAsync);
+            thread.IsBackground = true;
             thread.Start(client);
-
-            lock (communicationThreads)
-                communicationThreads.Add(thread);
         }
 
         private void ReceiveAsync(object oclient)
