@@ -5,39 +5,19 @@ namespace MultiPongServer
 {
     public class Pad
     {
-        public Vector2 position;
+        public Vector2 Position { get; private set; }
 
-        public Texture2D rectangle;
+        public Rectangle Rectangle { get; private set; }
 
-        public Rectangle Bounds
+        public void Move(Vector2 x)
         {
-            get
-            {
-                var rect = rectangle.Bounds;
-                rect.Offset(position);
-                return rect;
-            }
+            Position += x;
         }
 
-        public void move(Vector2 x)
+        public Pad(Rectangle rectangle, Vector2 initialPosition)
         {
-            position += x;
-        }
-
-        public Pad(Texture2D rectangle, Vector2 initialPosition)
-        {
-            position = initialPosition;
-            this.rectangle = rectangle;
-        }
-
-        public Pad(Vector2 initialPosition)
-        {
-            position = initialPosition;
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(rectangle, position, Color.White);
+            Position = initialPosition;
+            Rectangle = rectangle;
         }
     }
 }

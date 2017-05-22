@@ -53,7 +53,11 @@ namespace MultiPongCommon
                             var padPosition = ReadVector2(binReader);
                             return new UpdatePadMessage(padPosition, playerId);
 
-                         //TODO: Add all cases
+                        case MessageType.RegisterRejection:
+                            return new RegisterRejection() { PlayerId = playerId }; ;
+
+                        case MessageType.EndGame:
+                            return new EndGame() { PlayerId = playerId }; ;
                     }
                 }
             }

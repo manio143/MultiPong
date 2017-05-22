@@ -7,7 +7,7 @@ namespace MultiPongCommon
     {
         public Vector2 PadPosition { get; set; }
 
-        public UpdatePadMessage(Vector2 padPosition, int playerId)
+        public UpdatePadMessage(Vector2 padPosition, byte playerId)
         {
             PadPosition = padPosition;
             PlayerId = playerId;

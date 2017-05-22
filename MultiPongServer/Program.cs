@@ -29,8 +29,13 @@ namespace MultiPongServer
 
         private Stopwatch stopwatch;
 
-        private GameState gameState;
-
+        private GameState gameState = new GameState(
+            Constants.BALL_INITIAL_POSITION,
+            Constants.PLAYER1_INITIAL_POSITION,
+            Constants.PLAYER2_INITIAL_POSITION,
+            Constants.INITIAL_VELOCITY,
+            Constants.SCREEN_HEIGHT);
+        
         public void Loop()
         {
             TimeSpan previous, current;
@@ -51,7 +56,34 @@ namespace MultiPongServer
 
         private void Handle(Message message)
         {
-            //TODO: switch(message.MessageType)
+            Message messageToSend;
+            switch (message.MessageType)
+            {
+                case MessageType.Register:
+                    if (gameState.Players >= 2)
+                    {
+                        messageToSend = new RegisterRejection();
+                        messageToSend.SenderStream = message.SenderStream;
+                        networkClient.Send(messageToSend);
+                    }
+                    else
+                    {
+                        ++gameState.Players;
+                        messageToSend = new RegisterConfirmation(gameState.Players);
+                        messageToSend.SenderStream = message.SenderStream;
+                        networkClient.Send(messageToSend);
+                    }
+                    break;
+
+                case MessageType.GetState:
+                    messageToSend = new StateMessage(gameState.DummyBall.Position, gameState.Player1.Position, gameState.Player2.Position);
+                    messageToSend.SenderStream = message.SenderStream;
+                    networkClient.Send(messageToSend);
+                    break;
+
+                default:
+                    throw new Exception("Handle: invalid message type");
+            }         
         }
     }
 }

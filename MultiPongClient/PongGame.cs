@@ -29,11 +29,11 @@ namespace MultiPongClient
         {
             base.Initialize();
             spriteBatch = new SpriteBatch(gdm.GraphicsDevice);
-            ball = new Ball(createCircleText(Ball.RADIUS), new Vector2(200, 150), new Vector2(1, 2),
-                gdm.GraphicsDevice.Viewport.Height);
+            ball = new Ball(createCircleText(Ball.RADIUS), Constants.BALL_INITIAL_POSITION, 
+                Constants.INITIAL_VELOCITY, Constants.SCREEN_HEIGHT);
 
-            player1 = new Pad(createRectangle(20, 180), new Vector2(10, 100));
-            player2 = new Pad(createRectangle(20, 180), new Vector2(gdm.GraphicsDevice.Viewport.Width - 30, 100));
+            player1 = new Pad(createRectangle(Constants.PAD_WIDTH, Constants.PAD_LENGTH), Constants.PLAYER1_INITIAL_POSITION);
+            player2 = new Pad(createRectangle(Constants.PAD_WIDTH, Constants.PAD_LENGTH), Constants.PLAYER2_INITIAL_POSITION);
 
             networkClient.Send(new RegisterMessage());
             var message = networkClient.Receive();
@@ -67,7 +67,7 @@ namespace MultiPongClient
                 //TODO: process received message
             }
             else if (message is EndGame)
-            {
+            {   
                 //TODO: Display winner
                 //Handle exit
             }

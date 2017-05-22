@@ -4,7 +4,7 @@
     {
         public RegisterRejection()
         {
-            MessageType = MessageType.RegesterRejection;
+            MessageType = MessageType.RegisterRejection;
         }
     }
 }
