@@ -29,15 +29,17 @@ namespace MultiPongClient
         {
             base.Initialize();
             spriteBatch = new SpriteBatch(gdm.GraphicsDevice);
-            ball = new Ball(createCircleText(Ball.RADIUS), Constants.BALL_INITIAL_POSITION, 
+            ball = new Ball(createCircleText(Ball.RADIUS), Constants.BALL_INITIAL_POSITION,
                 Constants.INITIAL_VELOCITY, Constants.SCREEN_HEIGHT);
 
-            player1 = new Pad(createRectangle(Constants.PAD_WIDTH, Constants.PAD_LENGTH), Constants.PLAYER1_INITIAL_POSITION);
-            player2 = new Pad(createRectangle(Constants.PAD_WIDTH, Constants.PAD_LENGTH), Constants.PLAYER2_INITIAL_POSITION);
+            player1 = new Pad(createRectangle(Constants.PAD_WIDTH, Constants.PAD_LENGTH),
+                Constants.PLAYER1_INITIAL_POSITION);
+            player2 = new Pad(createRectangle(Constants.PAD_WIDTH, Constants.PAD_LENGTH),
+                Constants.PLAYER2_INITIAL_POSITION);
 
             networkClient.Send(new RegisterMessage());
             var message = networkClient.Receive();
-            if(message is RegisterRejection)
+            if (message is RegisterRejection)
                 throw new ApplicationException("The server is busy");
             if (message is RegisterConfirmation)
             {
