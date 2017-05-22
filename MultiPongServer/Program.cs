@@ -29,27 +29,29 @@ namespace MultiPongServer
 
         private Stopwatch stopwatch;
 
+        private bool started;
+
         private GameState gameState = new GameState(
             Constants.BALL_INITIAL_POSITION,
             Constants.PLAYER1_INITIAL_POSITION,
             Constants.PLAYER2_INITIAL_POSITION,
             Constants.INITIAL_VELOCITY,
             Constants.SCREEN_HEIGHT);
-        
+
+        TimeSpan previous, current;
+
         public void Loop()
         {
-            TimeSpan previous, current;
-
             stopwatch = new Stopwatch();
             stopwatch.Start();
-            previous = current = stopwatch.Elapsed;
 
             while (true)
             {
                 var message = networkClient.Receive();
                 Handle(message);
                 current = stopwatch.Elapsed;
-                gameState.Update(TimeSpan.FromTicks(current.Ticks - previous.Ticks));
+                if (started)
+                    gameState.Update(TimeSpan.FromTicks(current.Ticks - previous.Ticks));
                 previous = current;
             }
         }
@@ -60,30 +62,36 @@ namespace MultiPongServer
             switch (message.MessageType)
             {
                 case MessageType.Register:
-                    if (gameState.Players >= 2)
-                    {
-                        messageToSend = new RegisterRejection();
-                        messageToSend.SenderStream = message.SenderStream;
-                        networkClient.Send(messageToSend);
-                    }
-                    else
+                    if (gameState.CanAddNewPlayer())
                     {
                         ++gameState.Players;
                         messageToSend = new RegisterConfirmation(gameState.Players);
+                        messageToSend.SenderStream = message.SenderStream;
+                        networkClient.Send(messageToSend);
+                        if (!gameState.CanAddNewPlayer())
+                        {
+                            previous = current = stopwatch.Elapsed;
+                            started = true;
+                        }
+                    }
+                    else
+                    {
+                        messageToSend = new RegisterRejection();
                         messageToSend.SenderStream = message.SenderStream;
                         networkClient.Send(messageToSend);
                     }
                     break;
 
                 case MessageType.GetState:
-                    messageToSend = new StateMessage(gameState.DummyBall.Position, gameState.Player1.Position, gameState.Player2.Position);
+                    messageToSend = new StateMessage(gameState.DummyBall.Position, gameState.Player1.Position,
+                        gameState.Player2.Position);
                     messageToSend.SenderStream = message.SenderStream;
                     networkClient.Send(messageToSend);
                     break;
 
                 default:
                     throw new Exception("Handle: invalid message type");
-            }         
+            }
         }
     }
 }

@@ -33,13 +33,7 @@ namespace MultiPongServer
 
         public bool CanAddNewPlayer()
         {
-            throw new NotImplementedException();
-        }
-
-        public int RegisterPlayer(Stream playerStream)
-        {
-            throw new NotImplementedException();
-            //TODO: return id of new player
+            return Players >= 2;
         }
     }
 }
