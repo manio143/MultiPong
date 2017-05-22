@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Ball.cs" />
+    <Compile Include="NetworkClientForClient.cs" />
     <Compile Include="Pad.cs" />
     <Compile Include="PongGame.cs" />
     <Compile Include="Program.cs" />

@@ -21,11 +21,11 @@ namespace MultiPongServer
 
         public Program()
         {
-            networkClient = new NetworkClient();
+            networkClient = new NetworkClientForServer();
             networkClient.ListenAsync();
         }
 
-        private INetworkClient networkClient;
+        private NetworkClientForServer networkClient;
 
         private Stopwatch stopwatch;
 

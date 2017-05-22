@@ -16,7 +16,7 @@ namespace MultiPongClient
 
         Pad player1, player2;
 
-        private INetworkClient networkClient = new NetworkClient();
+        private NetworkClientForClient networkClient = new NetworkClientForClient();
 
         public PongGame()
         {

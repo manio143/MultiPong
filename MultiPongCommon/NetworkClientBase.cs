@@ -9,10 +9,8 @@ using System.Diagnostics;
 
 namespace MultiPongCommon
 {
-    public class NetworkClient : INetworkClient
+    public abstract class NetworkClientBase
     {
-        private TcpListener listener;
-
         private Semaphore queueSemaphore = new Semaphore(0, int.MaxValue);
 
         private Queue<Message> messageQueue = new Queue<Message>();
@@ -24,48 +22,21 @@ namespace MultiPongCommon
                 return messageQueue.Dequeue();
         }
 
-        public void Send(Message message)
+        public virtual void Send(Message message)
         {
             var bytes = message.GetBytes();
             message.SenderStream.WriteByte((byte)bytes.Length);
             message.SenderStream.Write(bytes, 0, bytes.Length);
         }
 
-
-        public void ListenAsync()
-        {
-            listener = new TcpListener(IPAddress.Any, 7575);
-            listener.Start();
-            listener.BeginAcceptTcpClient(AcceptClient, null);
-        }
-
-        private void AcceptClient(IAsyncResult ar)
-        {
-            var client = listener.EndAcceptTcpClient(ar);
-
-            Debug.WriteLine("New client accepted.");
-
-            StartReceiveAsyncInNewThread(client);
-
-            listener.BeginAcceptTcpClient(AcceptClient, null);
-        }
-
-        public void Connect(IPEndPoint endPoint)
-        {
-            var client = new TcpClient();
-            client.Connect(endPoint);
-
-            StartReceiveAsyncInNewThread(client);
-        }
-
-        private void StartReceiveAsyncInNewThread(TcpClient client)
+        protected void StartReceiveAsyncInNewThread(TcpClient client)
         {
             var thread = new Thread(ReceiveAsync);
             thread.IsBackground = true;
             thread.Start(client);
         }
 
-        private void ReceiveAsync(object oclient)
+        protected void ReceiveAsync(object oclient)
         {
             var client = (TcpClient) oclient;
             var stream = client.GetStream();
