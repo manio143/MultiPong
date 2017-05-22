@@ -57,7 +57,8 @@ namespace MultiPongCommon
                             return new RegisterRejection() { PlayerId = playerId }; ;
 
                         case MessageType.EndGame:
-                            return new EndGame() { PlayerId = playerId }; ;
+                            var winner = binReader.ReadByte();
+                            return new EndGame(winner) { PlayerId = playerId }; ;
                     }
                 }
             }
