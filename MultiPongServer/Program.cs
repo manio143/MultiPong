@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using MultiPongCommon;
 
@@ -87,6 +86,27 @@ namespace MultiPongServer
                         gameState.Player2.Position);
                     messageToSend.SenderStream = message.SenderStream;
                     networkClient.Send(messageToSend);
+                    break;
+
+                case MessageType.UpdatePad:
+                    var updatePadMessage = message as UpdatePadMessage;
+                    if(message != null)
+                    {
+                        switch(updatePadMessage.PlayerId)
+                        {
+                            case 1:
+                                gameState.Player1.Move(updatePadMessage.PadPosition);
+                                break;
+
+                            case 2:
+                                gameState.Player2.Move(updatePadMessage.PadPosition);
+                                break;
+
+                            default:
+                                throw new Exception("Handle: invalid player id");
+                        }
+                    }
+                    else throw new Exception("Handle: invalid update pad message");
                     break;
 
                 default:

@@ -32,7 +32,7 @@ namespace MultiPongClient
             base.Initialize();
             spriteBatch = new SpriteBatch(gdm.GraphicsDevice);
             ball = new Ball(createCircleText(Ball.RADIUS), Constants.BALL_INITIAL_POSITION,
-                Constants.INITIAL_VELOCITY, Constants.SCREEN_HEIGHT);
+                Constants.INITIAL_VELOCITY);
 
             player1 = new Pad(createRectangle(Constants.PAD_WIDTH, Constants.PAD_LENGTH),
                 Constants.PLAYER1_INITIAL_POSITION);
@@ -82,12 +82,16 @@ namespace MultiPongClient
             else throw new ApplicationException("Unexpected message received");
 
             base.Update(gameTime);
-            ball.Update(gameTime);
 
+            movePad();
+        }
+
+        private void movePad()
+        {
             var mouseState = Mouse.GetState();
-            //TODO: calculate difference in mouseState Y
-            //var diff
-            //TODO: networkClient.Send(new UpdatePadMessage(...);
+            var myX = myId == 1 ? player1.Position.X : player2.Position.X;
+            var updateMessage = new UpdatePadMessage(new Vector2(myX, mouseState.Y), myId);
+            networkClient.Send(updateMessage);
         }
 
         public Texture2D createRectangle(int width, int height)

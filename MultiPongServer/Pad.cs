@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace MultiPongServer
 {
@@ -11,7 +10,7 @@ namespace MultiPongServer
 
         public void Move(Vector2 x)
         {
-            Position += x;
+            Position = x;
         }
 
         public Pad(Rectangle rectangle, Vector2 initialPosition)
