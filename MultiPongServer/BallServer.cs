@@ -1,7 +1,5 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MultiPongServer;
 
 namespace MultiPongServer
 {
@@ -9,9 +7,9 @@ namespace MultiPongServer
     {
         public Vector2 Position { get; private set; }
         public Vector2 Velocity { get; private set; }
-        const float acceleration = 30f;
+        const float acceleration = MultiPongCommon.Constants.BALL_ACCELERATION;
 
-        public const int RADIUS = 50;
+        public const int RADIUS = MultiPongCommon.Constants.BALL_RADIUS;
 
         int height;
 
@@ -104,8 +102,18 @@ namespace MultiPongServer
             var direction = Velocity;
             direction.Normalize();
             Velocity += direction * acceleration * (float) gameTime.TotalSeconds;
+
+            if (Position.Y < 0 || Position.Y + 2 * RADIUS > height)
+                BounceBoundaries(gameTime, gameState);
+
             Bounce(gameState.Player1);
             Bounce(gameState.Player2);
+        }
+
+        private void BounceBoundaries(TimeSpan gameTime, GameState gameState)
+        {
+            Velocity = new Vector2(Velocity.X, -Velocity.Y);
+            Update(gameTime, gameState); // move back to the field
         }
     }
 }

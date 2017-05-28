@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Microsoft.Xna.Framework;
 using MultiPongCommon;
 
@@ -23,12 +22,6 @@ namespace MultiPongServer
         public void Update(TimeSpan gameTime)
         {
             DummyBall.Update(gameTime, this);
-        }
-
-        public void UpdatePlayers(Vector2 player1, Vector2 player2)
-        {
-            this.Player1.Move(player1);
-            this.Player2.Move(player2);
         }
 
         public bool CanAddNewPlayer()
