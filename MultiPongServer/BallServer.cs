@@ -125,7 +125,7 @@ namespace MultiPongServer
 
         private void SetOutside()
         {
-            if (Position.X - RADIUS < 0)
+            if (Position.X + 2*RADIUS < 0)
                 Outside = Outside.Left;
             else if (Position.X > Constants.SCREEN_WIDTH)
                 Outside = Outside.Right;

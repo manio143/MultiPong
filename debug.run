@@ -1,0 +1,4 @@
+./MultiPongServer/bin/Debug/MultiPongServer.exe &
+sleep 1 
+./MultiPongClient/bin/Debug/MultiPongClient.exe &
+./MultiPongClient/bin/Debug/MultiPongClient.exe &

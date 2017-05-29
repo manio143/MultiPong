@@ -72,6 +72,7 @@ namespace MultiPongClient
                 Debug.WriteLine($"New ball position: {stateMessage.BallPosition.X}, {stateMessage.BallPosition.Y}");
                 player1.Move(stateMessage.Player1Position);
                 player2.Move(stateMessage.Player2Position);
+                Window.Title = $"MultiPong - {stateMessage.Player1Score} : {stateMessage.Player2Score}";
             }
             else if (message is EndGame)
             {
