@@ -46,6 +46,7 @@ namespace MultiPongServer
 
             while (true)
             {
+                while(!networkClient.CanReceive);
                 var message = networkClient.Receive();
                 Handle(message);
                 current = stopwatch.Elapsed;
@@ -57,6 +58,7 @@ namespace MultiPongServer
 
         private void Handle(Message message)
         {
+            if(message == null)return;
             Message messageToSend;
             switch (message.MessageType)
             {

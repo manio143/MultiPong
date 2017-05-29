@@ -16,17 +16,25 @@ namespace MultiPongCommon
 
         private Queue<Message> messageQueue = new Queue<Message>();
 
+        private volatile bool canReceive;
+        public bool CanReceive => canReceive;
         public Message Receive()
         {
-            queueSemaphore.WaitOne();
-            lock (messageQueue)
-                return messageQueue.Dequeue();
+            //queueSemaphore.WaitOne();
+            //lock (messageQueue)
+            if (messageQueue.Count > 0)
+            {
+                var m = messageQueue.Dequeue();
+                if (messageQueue.Count == 0) canReceive = false;
+                return m;
+            }
+            else return null;
         }
 
         public virtual void Send(Message message)
         {
             var bytes = message.GetBytes();
-            message.SenderStream.WriteByte((byte) bytes.Length);
+            message.SenderStream.WriteByte((byte)bytes.Length);
             message.SenderStream.Write(bytes, 0, bytes.Length);
         }
 
@@ -39,7 +47,7 @@ namespace MultiPongCommon
 
         protected void ReceiveAsync(object oclient)
         {
-            var client = (TcpClient) oclient;
+            var client = (TcpClient)oclient;
             var stream = client.GetStream();
             while (client.Connected)
             {
@@ -51,13 +59,14 @@ namespace MultiPongCommon
                     var bytes = new byte[bytesToRead];
                     while (bytesToRead > 0)
                         bytesToRead -= stream.Read(bytes, bytes.Length - bytesToRead, bytesToRead);
-                    lock (messageQueue)
-                    {
-                        var message = Message.FromBytes(bytes);
-                        message.SenderStream = stream;
-                        messageQueue.Enqueue(message);
-                        Debug.WriteLine("Message received ({{{0}}}", message);
-                    }
+                    //lock (messageQueue)
+                    //{
+                    var message = Message.FromBytes(bytes);
+                    message.SenderStream = stream;
+                    messageQueue.Enqueue(message);
+                    canReceive = true;
+                    Console.WriteLine("Message received ({{{0}}}", message);
+                    //}
                     queueSemaphore.Release();
                 }
                 catch (IOException ioex)

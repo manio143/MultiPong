@@ -40,6 +40,7 @@ namespace MultiPongClient
                 Constants.PLAYER2_INITIAL_POSITION);
 
             networkClient.Send(new RegisterMessage());
+            while (!networkClient.CanReceive) ;
             var message = networkClient.Receive();
             if (message is RegisterRejection)
                 throw new ApplicationException("The server is busy");
@@ -63,25 +64,27 @@ namespace MultiPongClient
 
         protected override void Update(GameTime gameTime)
         {
-            networkClient.Send(new GetStateMessage(){PlayerId = myId});
-            var message = networkClient.Receive();
-            var stateMessage = message as StateMessage;
-            if (stateMessage != null)
+            if (!networkClient.CanReceive) networkClient.Send(new GetStateMessage() { PlayerId = myId });
+            else
             {
-                ball.Move(stateMessage.BallPosition);
-                Debug.WriteLine($"New ball position: {stateMessage.BallPosition.X}, {stateMessage.BallPosition.Y}");
-                player1.Move(stateMessage.Player1Position);
-                player2.Move(stateMessage.Player2Position);
-                Window.Title = $"MultiPong - {stateMessage.Player1Score} : {stateMessage.Player2Score}";
+                var message = networkClient.Receive();
+                var stateMessage = message as StateMessage;
+                if (stateMessage != null)
+                {
+                    ball.Move(stateMessage.BallPosition);
+                    Debug.WriteLine($"New ball position: {stateMessage.BallPosition.X}, {stateMessage.BallPosition.Y}");
+                    player1.Move(stateMessage.Player1Position);
+                    player2.Move(stateMessage.Player2Position);
+                    Window.Title = $"MultiPong - {stateMessage.Player1Score} : {stateMessage.Player2Score}";
+                }
+                else if (message is EndGame)
+                {
+                    var winner = (message as EndGame).Winner;
+                    //TODO: Display winner
+                    //Handle exit
+                }
+                else throw new ApplicationException("Unexpected message received");
             }
-            else if (message is EndGame)
-            {
-                var winner = (message as EndGame).Winner;
-                //TODO: Display winner
-                //Handle exit
-            }
-            else throw new ApplicationException("Unexpected message received");
-
             base.Update(gameTime);
 
             movePad();
