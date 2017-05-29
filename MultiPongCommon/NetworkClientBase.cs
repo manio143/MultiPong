@@ -12,23 +12,20 @@ namespace MultiPongCommon
 {
     public abstract class NetworkClientBase
     {
-        private Semaphore queueSemaphore = new Semaphore(0, int.MaxValue);
+        private ConcurrentQueue<Message> messageQueue = new ConcurrentQueue<Message>();
 
-        private Queue<Message> messageQueue = new Queue<Message>();
-
-        private volatile bool canReceive;
-        public bool CanReceive => canReceive;
         public Message Receive()
         {
-            //queueSemaphore.WaitOne();
-            //lock (messageQueue)
-            if (messageQueue.Count > 0)
-            {
-                var m = messageQueue.Dequeue();
-                if (messageQueue.Count == 0) canReceive = false;
-                return m;
-            }
-            else return null;
+            Message m;
+            messageQueue.TryDequeue(out m);
+            return m;
+        }
+
+        public Message ReceiveBlocking()
+        {
+            Message m;
+            while((m = Receive()) == null);
+            return m;
         }
 
         public virtual void Send(Message message)
@@ -59,15 +56,10 @@ namespace MultiPongCommon
                     var bytes = new byte[bytesToRead];
                     while (bytesToRead > 0)
                         bytesToRead -= stream.Read(bytes, bytes.Length - bytesToRead, bytesToRead);
-                    //lock (messageQueue)
-                    //{
                     var message = Message.FromBytes(bytes);
                     message.SenderStream = stream;
                     messageQueue.Enqueue(message);
-                    canReceive = true;
-                    Console.WriteLine("Message received ({{{0}}}", message);
-                    //}
-                    queueSemaphore.Release();
+                    Debug.WriteLine("Message received ({{{0}}}", message);
                 }
                 catch (IOException ioex)
                 {

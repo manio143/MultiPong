@@ -19,6 +19,7 @@ namespace MultiPongClient
 
         private NetworkClientForClient networkClient = new NetworkClientForClient();
         private byte myId;
+        private bool nextUpdate = true;
 
         public PongGame()
         {
@@ -40,13 +41,11 @@ namespace MultiPongClient
                 Constants.PLAYER2_INITIAL_POSITION);
 
             networkClient.Send(new RegisterMessage());
-            while (!networkClient.CanReceive) ;
-            var message = networkClient.Receive();
+            var message = networkClient.ReceiveBlocking();
             if (message is RegisterRejection)
                 throw new ApplicationException("The server is busy");
             if (message is RegisterConfirmation)
             {
-                //TODO: make id a field and use it for pad update
                 myId = (message as RegisterConfirmation).PlayerId;
             }
             else throw new ApplicationException("Unexpected message received");
@@ -64,10 +63,14 @@ namespace MultiPongClient
 
         protected override void Update(GameTime gameTime)
         {
-            if (!networkClient.CanReceive) networkClient.Send(new GetStateMessage() { PlayerId = myId });
-            else
+            if (nextUpdate)
             {
-                var message = networkClient.Receive();
+                networkClient.Send(new GetStateMessage() { PlayerId = myId });
+                nextUpdate = false;
+            }
+            var message = networkClient.Receive();
+            if (message != null)
+            {
                 var stateMessage = message as StateMessage;
                 if (stateMessage != null)
                 {
@@ -84,10 +87,13 @@ namespace MultiPongClient
                     //Handle exit
                 }
                 else throw new ApplicationException("Unexpected message received");
+
+                movePad();
+
+                nextUpdate = true;
             }
             base.Update(gameTime);
 
-            movePad();
         }
 
         private void movePad()
