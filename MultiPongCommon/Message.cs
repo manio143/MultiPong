@@ -47,7 +47,10 @@ namespace MultiPongCommon
                             var ballPosition = ReadVector2(binReader);
                             var player1Position = ReadVector2(binReader);
                             var player2Position = ReadVector2(binReader);
-                            return new StateMessage(ballPosition, player1Position, player2Position);
+                            var playerscore = binReader.ReadByte();
+                            var ret = new StateMessage(ballPosition, player1Position, player2Position);
+                            ret.PlayerScore = playerscore;
+                            return ret;
 
                         case MessageType.UpdatePad:
                             var padPosition = ReadVector2(binReader);

@@ -82,8 +82,12 @@ namespace MultiPongServer
                     break;
 
                 case MessageType.GetState:
-                    messageToSend = new StateMessage(gameState.DummyBall.Position, gameState.Player1.Position,
-                        gameState.Player2.Position);
+                    messageToSend = new StateMessage(gameState.CurrentBall.Position, gameState.Player1.Position,
+                        gameState.Player2.Position)
+                    {
+                        Player1Score = gameState.Player1Score,
+                        Player2Score = gameState.Player2Score
+                    };                    
                     messageToSend.SenderStream = message.SenderStream;
                     networkClient.Send(messageToSend);
                     break;

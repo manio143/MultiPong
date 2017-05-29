@@ -1,12 +1,22 @@
 ﻿using System;
+using System.Security.Cryptography;
 using Microsoft.Xna.Framework;
+using MultiPongCommon;
 
 namespace MultiPongServer
 {
-    public class BallServer
+    public enum Outside
+    {
+        None = 0,
+        Left,
+        Right
+    }
+
+    public struct BallServer
     {
         public Vector2 Position { get; private set; }
         public Vector2 Velocity { get; private set; }
+        public Outside Outside { get; set; }
         const float acceleration = MultiPongCommon.Constants.BALL_ACCELERATION;
 
         public const int RADIUS = MultiPongCommon.Constants.BALL_RADIUS;
@@ -21,7 +31,7 @@ namespace MultiPongServer
             B = new Vector2(Player.Position.X + Player.Rectangle.Width, Player.Position.Y);
             C = new Vector2(Player.Position.X, Player.Position.Y + Player.Rectangle.Height);
             D = new Vector2(Player.Position.X + Player.Rectangle.Width,
-                            Player.Position.Y + Player.Rectangle.Height);
+                Player.Position.Y + Player.Rectangle.Height);
 
             if (Vector2.Distance(ballCentre, A) <= RADIUS)
             {
@@ -94,6 +104,7 @@ namespace MultiPongServer
             Position = initialPosition;
             Velocity = initVelocity;
             height = screenHeight;
+            Outside = Outside.None;
         }
 
         public void Update(TimeSpan gameTime, GameState gameState)
@@ -108,6 +119,18 @@ namespace MultiPongServer
 
             Bounce(gameState.Player1);
             Bounce(gameState.Player2);
+        
+            SetOutside();
+        }
+
+        private void SetOutside()
+        {
+            if (Position.X - RADIUS < 0)
+                Outside = Outside.Left;
+            else if (Position.X > Constants.SCREEN_WIDTH)
+                Outside = Outside.Right;
+            else
+                Outside = Outside.None;
         }
 
         private void BounceBoundaries(TimeSpan gameTime, GameState gameState)
