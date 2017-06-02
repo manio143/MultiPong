@@ -19,6 +19,7 @@ namespace MultiPongClient
 
         private NetworkClientForClient networkClient = new NetworkClientForClient();
         private byte myId;
+        private bool nextUpdate = true;
 
         public PongGame()
         {
@@ -40,12 +41,11 @@ namespace MultiPongClient
                 Constants.PLAYER2_INITIAL_POSITION);
 
             networkClient.Send(new RegisterMessage());
-            var message = networkClient.Receive();
+            var message = networkClient.ReceiveBlocking();
             if (message is RegisterRejection)
                 throw new ApplicationException("The server is busy");
             if (message is RegisterConfirmation)
             {
-                //TODO: make id a field and use it for pad update
                 myId = (message as RegisterConfirmation).PlayerId;
             }
             else throw new ApplicationException("Unexpected message received");
@@ -63,28 +63,37 @@ namespace MultiPongClient
 
         protected override void Update(GameTime gameTime)
         {
-            networkClient.Send(new GetStateMessage(){PlayerId = myId});
+            if (nextUpdate)
+            {
+                networkClient.Send(new GetStateMessage() { PlayerId = myId });
+                nextUpdate = false;
+            }
             var message = networkClient.Receive();
-            var stateMessage = message as StateMessage;
-            if (stateMessage != null)
+            if (message != null)
             {
-                ball.Move(stateMessage.BallPosition);
-                Debug.WriteLine($"New ball position: {stateMessage.BallPosition.X}, {stateMessage.BallPosition.Y}");
-                player1.Move(stateMessage.Player1Position);
-                player2.Move(stateMessage.Player2Position);
-                Window.Title = $"MultiPong - {stateMessage.Player1Score} : {stateMessage.Player2Score}";
-            }
-            else if (message is EndGame)
-            {
-                var winner = (message as EndGame).Winner;
-                //TODO: Display winner
-                //Handle exit
-            }
-            else throw new ApplicationException("Unexpected message received");
+                var stateMessage = message as StateMessage;
+                if (stateMessage != null)
+                {
+                    ball.Move(stateMessage.BallPosition);
+                    Debug.WriteLine($"New ball position: {stateMessage.BallPosition.X}, {stateMessage.BallPosition.Y}");
+                    player1.Move(stateMessage.Player1Position);
+                    player2.Move(stateMessage.Player2Position);
+                    Window.Title = $"MultiPong - {stateMessage.Player1Score} : {stateMessage.Player2Score}";
+                }
+                else if (message is EndGame)
+                {
+                    var winner = (message as EndGame).Winner;
+                    //TODO: Display winner
+                    //Handle exit
+                }
+                else throw new ApplicationException("Unexpected message received");
 
+                movePad();
+
+                nextUpdate = true;
+            }
             base.Update(gameTime);
 
-            movePad();
         }
 
         private void movePad()

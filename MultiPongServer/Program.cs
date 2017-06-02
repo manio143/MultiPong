@@ -57,6 +57,7 @@ namespace MultiPongServer
 
         private void Handle(Message message)
         {
+            if(message == null)return;
             Message messageToSend;
             switch (message.MessageType)
             {
