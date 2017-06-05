@@ -136,7 +136,7 @@ namespace MultiPongServer
         private void BounceBoundaries(TimeSpan gameTime, GameState gameState)
         {
             Velocity = new Vector2(Velocity.X, -Velocity.Y);
-            Update(gameTime, gameState); // move back to the field
+            Position += (float)gameTime.TotalSeconds * Velocity;
         }
     }
 }

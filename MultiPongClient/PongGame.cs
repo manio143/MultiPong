@@ -17,6 +17,7 @@ namespace MultiPongClient
 
         Pad player1, player2;
 
+        private bool running = true;
         private NetworkClientForClient networkClient = new NetworkClientForClient();
         private byte myId;
         private bool nextUpdate = true;
@@ -63,6 +64,7 @@ namespace MultiPongClient
 
         protected override void Update(GameTime gameTime)
         {
+            if (!running) return;
             if (nextUpdate)
             {
                 networkClient.Send(new GetStateMessage() { PlayerId = myId });
@@ -83,8 +85,8 @@ namespace MultiPongClient
                 else if (message is EndGame)
                 {
                     var winner = (message as EndGame).Winner;
-                    //TODO: Display winner
-                    //Handle exit
+                    Window.Title += $" winner: {winner}";
+                    running = false;
                 }
                 else throw new ApplicationException("Unexpected message received");
 

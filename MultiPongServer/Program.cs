@@ -30,6 +30,8 @@ namespace MultiPongServer
 
         private bool started;
 
+        private const int winTreshold = 1;
+
         private GameState gameState = new GameState(
             Constants.BALL_INITIAL_POSITION,
             Constants.PLAYER1_INITIAL_POSITION,
@@ -53,6 +55,13 @@ namespace MultiPongServer
                     gameState.Update(TimeSpan.FromTicks(current.Ticks - previous.Ticks));
                 previous = current;
             }
+        }
+
+        private byte? getWinner(GameState state)
+        {
+            if (state.Player1Score - state.Player2Score >= winTreshold) return 1;
+            if (state.Player2Score - state.Player1Score >= winTreshold) return 2;
+            return null;
         }
 
         private void Handle(Message message)
@@ -88,9 +97,18 @@ namespace MultiPongServer
                     {
                         Player1Score = gameState.Player1Score,
                         Player2Score = gameState.Player2Score
-                    };                    
+                    };
                     messageToSend.SenderStream = message.SenderStream;
                     networkClient.Send(messageToSend);
+
+                    var winner = getWinner(gameState);
+                    if (winner != null)
+                    {
+                        messageToSend = new EndGame(winner.Value);
+                        messageToSend.SenderStream = message.SenderStream;
+                        networkClient.Send(messageToSend);
+                    }
+
                     break;
 
                 case MessageType.UpdatePad:
