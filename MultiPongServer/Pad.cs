@@ -8,9 +8,9 @@ namespace MultiPongServer
 
         public Rectangle Rectangle { get; private set; }
 
-        public void Move(Vector2 x)
+        public void Move(Vector2 newVec)
         {
-            Position = x;
+            Position = new Vector2(Position.X, newVec.Y);
         }
 
         public Pad(Rectangle rectangle, Vector2 initialPosition)

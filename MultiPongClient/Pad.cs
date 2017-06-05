@@ -3,26 +3,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MultiPongClient
 {
-    public class Pad
+    public class Pad : RenderedObject
     {
-        public Vector2 Position { get; private set; }
-
         public Texture2D Rectangle { get; private set; }
 
-        public void Move(Vector2 x)
-        {
-            Position = x;
-        }
-
-        public Pad(Texture2D rectangle, Vector2 initialPosition)
+        public Pad(Vector2 screen, Texture2D rectangle, Vector2 initialPosition)
+        :base(screen)
         {
             Position = initialPosition;
             Rectangle = rectangle;
-        }
-
-        public Pad(Vector2 initialPosition)
-        {
-            Position = initialPosition;
         }
 
         public void Draw(SpriteBatch spriteBatch)

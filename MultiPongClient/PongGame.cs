@@ -31,12 +31,13 @@ namespace MultiPongClient
         {
             base.Initialize();
             spriteBatch = new SpriteBatch(gdm.GraphicsDevice);
-            ball = new Ball(createCircleText(Ball.RADIUS), Constants.BALL_INITIAL_POSITION,
+            var screen = Window.ClientBounds.Size.ToVector2();
+            ball = new Ball(screen, createCircleText(2 * Ball.RADIUS), Constants.BALL_INITIAL_POSITION,
                 Constants.INITIAL_VELOCITY);
 
-            player1 = new Pad(createRectangle(Constants.PAD_WIDTH, Constants.PAD_LENGTH),
+            player1 = new Pad(screen, createRectangle(Constants.PAD_WIDTH, Constants.PAD_LENGTH),
                 Constants.PLAYER1_INITIAL_POSITION);
-            player2 = new Pad(createRectangle(Constants.PAD_WIDTH, Constants.PAD_LENGTH),
+            player2 = new Pad(screen, createRectangle(Constants.PAD_WIDTH, Constants.PAD_LENGTH),
                 Constants.PLAYER2_INITIAL_POSITION);
 
             networkClient.Send(new RegisterMessage());
@@ -115,29 +116,23 @@ namespace MultiPongClient
             return texture;
         }
 
-        public Texture2D createCircleText(int radius)
+        public Texture2D createCircleText(int diameter)
         {
-            Texture2D texture = new Texture2D(gdm.GraphicsDevice, radius, radius);
-            Color[] colorData = new Color[radius * radius];
+            Texture2D texture = new Texture2D(gdm.GraphicsDevice, diameter, diameter);
+            Color[] colorData = new Color[diameter * diameter];
 
-            float diam = radius / 2f;
-            float diamsq = diam * diam;
+            float radius = diameter / 2f;
+            float diamsq = radius * radius;
 
-            for (int x = 0; x < radius; x++)
+            for (int x = 0; x < diameter; x++)
+            for (int y = 0; y < diameter; y++)
             {
-                for (int y = 0; y < radius; y++)
-                {
-                    int index = x * radius + y;
-                    Vector2 pos = new Vector2(x - diam, y - diam);
-                    if (pos.LengthSquared() <= diamsq)
-                    {
-                        colorData[index] = Color.White;
-                    }
-                    else
-                    {
-                        colorData[index] = Color.Transparent;
-                    }
-                }
+                int index = x * diameter + y;
+                Vector2 pos = new Vector2(x - radius, y - radius);
+                if (pos.LengthSquared() <= diamsq)
+                    colorData[index] = Color.White;
+                else
+                    colorData[index] = Color.Transparent;
             }
 
             texture.SetData(colorData);
