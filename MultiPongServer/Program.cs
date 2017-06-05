@@ -29,8 +29,10 @@ namespace MultiPongServer
         private Stopwatch stopwatch;
 
         private bool started;
+        private bool running = true;
+        private TimeSpan ending_offset = new TimeSpan(5000000); //0.5sec
 
-        private const int winTreshold = 1;
+        private const int winTreshold = 5;
 
         private GameState gameState = new GameState(
             Constants.BALL_INITIAL_POSITION,
@@ -51,7 +53,13 @@ namespace MultiPongServer
                 var message = networkClient.Receive();
                 Handle(message);
                 current = stopwatch.Elapsed;
-                if (started)
+                if (running && getWinner(gameState) != null)
+                {
+                    ending_offset -= current - previous;
+                    if(ending_offset.Ticks < 0)
+                        running = false;
+                }
+                if (started && running)
                     gameState.Update(TimeSpan.FromTicks(current.Ticks - previous.Ticks));
                 previous = current;
             }
@@ -66,7 +74,7 @@ namespace MultiPongServer
 
         private void Handle(Message message)
         {
-            if(message == null)return;
+            if (message == null) return;
             Message messageToSend;
             switch (message.MessageType)
             {
@@ -92,30 +100,31 @@ namespace MultiPongServer
                     break;
 
                 case MessageType.GetState:
-                    messageToSend = new StateMessage(gameState.CurrentBall.Position, gameState.Player1.Position,
-                        gameState.Player2.Position)
+                    if (running)
                     {
-                        Player1Score = gameState.Player1Score,
-                        Player2Score = gameState.Player2Score
-                    };
-                    messageToSend.SenderStream = message.SenderStream;
-                    networkClient.Send(messageToSend);
-
-                    var winner = getWinner(gameState);
-                    if (winner != null)
+                        messageToSend = new StateMessage(gameState.CurrentBall.Position, gameState.Player1.Position,
+                            gameState.Player2.Position)
+                        {
+                            Player1Score = gameState.Player1Score,
+                            Player2Score = gameState.Player2Score
+                        };
+                        messageToSend.SenderStream = message.SenderStream;
+                        networkClient.Send(messageToSend);
+                    }
+                    else
                     {
+                        var winner = getWinner(gameState);
                         messageToSend = new EndGame(winner.Value);
                         messageToSend.SenderStream = message.SenderStream;
                         networkClient.Send(messageToSend);
                     }
-
                     break;
 
                 case MessageType.UpdatePad:
                     var updatePadMessage = message as UpdatePadMessage;
-                    if(message != null)
+                    if (message != null)
                     {
-                        switch(updatePadMessage.PlayerId)
+                        switch (updatePadMessage.PlayerId)
                         {
                             case 1:
                                 gameState.Player1.Move(updatePadMessage.PadPosition);
