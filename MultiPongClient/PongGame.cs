@@ -117,20 +117,20 @@ namespace MultiPongClient
             return texture;
         }
 
-        public Texture2D createCircleText(int radius)
+        public Texture2D createCircleText(int diameter)
         {
-            Texture2D texture = new Texture2D(gdm.GraphicsDevice, radius, radius);
-            Color[] colorData = new Color[radius * radius];
+            Texture2D texture = new Texture2D(gdm.GraphicsDevice, diameter, diameter);
+            Color[] colorData = new Color[diameter * diameter];
 
-            float diam = radius / 2f;
-            float diamsq = diam * diam;
+            float radius = diameter / 2f;
+            float diamsq = radius * radius;
 
-            for (int x = 0; x < radius; x++)
+            for (int x = 0; x < diameter; x++)
             {
-                for (int y = 0; y < radius; y++)
+                for (int y = 0; y < diameter; y++)
                 {
-                    int index = x * radius + y;
-                    Vector2 pos = new Vector2(x - diam, y - diam);
+                    int index = x * diameter + y;
+                    Vector2 pos = new Vector2(x - radius, y - radius);
                     if (pos.LengthSquared() <= diamsq)
                     {
                         colorData[index] = Color.White;

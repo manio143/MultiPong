@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using Microsoft.Xna.Framework;
 using MultiPongCommon;
@@ -23,7 +24,7 @@ namespace MultiPongServer
 
         int height;
 
-        private void Bounce(Pad Player)
+        private void BounceCorner(Pad Player)
         {
             Vector2 ballCentre = Position + new Vector2(RADIUS);
             Vector2 A, B, C, D, scaling;
@@ -65,38 +66,38 @@ namespace MultiPongServer
                 Velocity = scaling;
                 return;
             }
+        }
 
-            if (Position.X + 2 * RADIUS >= Player.Position.X
-                && (Position.Y + RADIUS) <= Player.Position.Y
-                && (Position.Y + RADIUS) >= Player.Position.Y + Player.Rectangle.Height)
+        private void Bounce(Pad player1, Pad player2)
+        {
+            if ((Position.X + 2 * RADIUS >= player2.Position.X
+                 && (Position.Y + RADIUS) >= player2.Position.Y
+                 && (Position.Y + RADIUS) <= player2.Position.Y + player2.Rectangle.Height)
+                || (Position.X <= (player1.Position.X + player1.Rectangle.Width) &&
+                    (Position.Y + RADIUS) >= player1.Position.Y &&
+                    (Position.Y + RADIUS) <= player1.Position.Y + player1.Rectangle.Height))
             {
                 Velocity *= new Vector2(-1, 1);
-                return;
-            }
-            if (Position.X <= (Player.Position.X + Player.Rectangle.Width) &&
-                (Position.Y + RADIUS) <= Player.Position.Y &&
-                (Position.Y + RADIUS) >= Player.Position.Y + Player.Rectangle.Height)
-            {
-                Velocity *= new Vector2(-1, 1);
+                Debug.WriteLine("Bounced");
                 return;
             }
 
-            if (Position.X + 2 * RADIUS >= Player.Position.X &&
-                Position.X + 2 * RADIUS <= (Player.Position.X + Player.Rectangle.Width) &&
-                (Position.Y + RADIUS) <= Player.Position.Y &&
-                (Position.Y + RADIUS) >= Player.Position.Y + Player.Rectangle.Height)
-            {
-                Velocity *= new Vector2(-1, 1);
-                return;
-            }
-            if (Position.X <= (Player.Position.X + Player.Rectangle.Width)
-                && Position.X >= Player.Position.X
-                && (Position.Y + RADIUS) <= Player.Position.Y
-                && (Position.Y + RADIUS) >= Player.Position.Y + Player.Rectangle.Height)
-            {
-                Velocity *= new Vector2(-1, 1);
-                return;
-            }
+//            if (Position.X + 2 * RADIUS >= Player.Position.X &&
+//                Position.X + 2 * RADIUS <= (Player.Position.X + Player.Rectangle.Width) &&
+//                (Position.Y + RADIUS) <= Player.Position.Y &&
+//                (Position.Y + RADIUS) >= Player.Position.Y + Player.Rectangle.Height)
+//            {
+//                Velocity *= new Vector2(-1, 1);
+//                return;
+//            }
+//            if (Position.X <= (Player.Position.X + Player.Rectangle.Width)
+//                && Position.X >= Player.Position.X
+//                && (Position.Y + RADIUS) <= Player.Position.Y
+//                && (Position.Y + RADIUS) >= Player.Position.Y + Player.Rectangle.Height)
+//            {
+//                Velocity *= new Vector2(-1, 1);
+//                return;
+//            }
         }
 
         public BallServer(Vector2 initialPosition, Vector2 initVelocity, int screenHeight)
@@ -117,15 +118,16 @@ namespace MultiPongServer
             if (Position.Y < 0 || Position.Y + 2 * RADIUS > height)
                 BounceBoundaries(gameTime, gameState);
 
-            Bounce(gameState.Player1);
-            Bounce(gameState.Player2);
-        
+            Bounce(gameState.Player1, gameState.Player2);
+            BounceCorner(gameState.Player1);
+            BounceCorner(gameState.Player2);
+
             SetOutside();
         }
 
         private void SetOutside()
         {
-            if (Position.X + 2*RADIUS < 0)
+            if (Position.X + 2 * RADIUS < 0)
                 Outside = Outside.Left;
             else if (Position.X > Constants.SCREEN_WIDTH)
                 Outside = Outside.Right;
@@ -136,7 +138,7 @@ namespace MultiPongServer
         private void BounceBoundaries(TimeSpan gameTime, GameState gameState)
         {
             Velocity = new Vector2(Velocity.X, -Velocity.Y);
-            Position += (float)gameTime.TotalSeconds * Velocity;
+            Position += (float) gameTime.TotalSeconds * Velocity;
         }
     }
 }

@@ -4,7 +4,7 @@ namespace MultiPongCommon
 {
     public static class Constants
     {
-        public const int BALL_RADIUS = 50;
+        public const int BALL_RADIUS = 20;
         public const float BALL_ACCELERATION = 30f;
         public const int PAD_WIDTH = 20;
         public const int PAD_LENGTH = 180;
