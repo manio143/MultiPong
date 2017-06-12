@@ -1,10 +1,13 @@
-﻿namespace MultiPongClient
+﻿using System.Net;
+
+namespace MultiPongClient
 {
     public class Program
     {
-        static void Main()
+        static void Main(string[] args)
         {
-            var game = new PongGame();
+            var ipaddr = args.Length < 1 ? IPAddress.Loopback : Dns.GetHostAddresses(args[0])[0];
+            var game = new PongGame(ipaddr);
             game.Run();
         }
     }

@@ -22,11 +22,10 @@ namespace MultiPongClient
         private byte myId;
         private bool nextUpdate = true;
 
-        public PongGame()
+        public PongGame(IPAddress address)
         {
             gdm = new GraphicsDeviceManager(this);
-            networkClient.Connect(new IPEndPoint(IPAddress.Loopback, 7575));
-            //TODO: add paramter to program for server address
+            networkClient.Connect(new IPEndPoint(address, 7575));
         }
 
         protected override void Initialize()
